@@ -1,0 +1,17 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: shuvam-veg-cafe
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.14.0"
+      - key: GEMINI_API_KEY
+        sync: false # Render asks for this when you create the service
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
