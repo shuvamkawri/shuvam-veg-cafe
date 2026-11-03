@@ -148,6 +148,7 @@ def _to_storage(value):
 
 class BillStore(Protocol):
     async def setup(self) -> None: ...
+    async def ping(self) -> None: ...
     async def next_number(self, series: str) -> int: ...
     async def insert(self, bill: dict) -> None: ...
     async def get(self, number: str) -> dict | None: ...
@@ -167,6 +168,9 @@ class MongoBillStore:
     async def setup(self) -> None:
         await self._bills.create_index("number", unique=True)
         await self._bills.create_index("created_at")
+
+    async def ping(self) -> None:
+        await self._client.admin.command("ping")
 
     async def next_number(self, series: str) -> int:
         from pymongo import ReturnDocument
@@ -207,6 +211,9 @@ class MemoryBillStore:
         self.counters: dict[str, int] = {}
 
     async def setup(self) -> None:
+        pass
+
+    async def ping(self) -> None:
         pass
 
     async def next_number(self, series: str) -> int:

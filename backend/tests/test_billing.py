@@ -212,3 +212,18 @@ def test_database_errors_get_a_clear_message():
     response = new_bill(api)
     assert response.status_code == 503
     assert "bill database" in response.json()["detail"]
+
+
+def test_database_health(api):
+    assert api.get("/health/db").json() == {"database": "ok"}
+
+
+def test_database_health_explains_atlas_refusal():
+    class DownStore(MemoryBillStore):
+        async def ping(self):
+            raise RuntimeError("SSL handshake failed: tlsv1 alert internal error")
+
+    api = TestClient(create_app(client=object(), bill_store=DownStore(), staff_password=PASSWORD))
+    body = api.get("/health/db").json()
+    assert body["database"] == "unreachable"
+    assert "0.0.0.0/0" in body["hint"]

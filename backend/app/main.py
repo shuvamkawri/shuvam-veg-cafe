@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import time
 from collections import OrderedDict
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -11,7 +12,7 @@ from typing import Annotated
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +32,8 @@ from app.bot import (
 )
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+# Our own log lines (requests, bills, errors) appear in Render > Logs.
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("shuvam_veg_bot")
 
 MAX_SESSIONS = 1000
@@ -145,6 +148,42 @@ def create_app(client=None, bill_store=None, staff_password=None) -> FastAPI:
             # The app must always get a message, never a dropped stream.
             logger.exception("Chat request failed")
             yield _event({"type": "error", "message": FAILED})
+
+    @app.middleware("http")
+    async def log_requests(request: Request, call_next):
+        """One line per request, and the full error when one crashes."""
+        started = time.perf_counter()
+        try:
+            response = await call_next(request)
+        except Exception:
+            logger.exception("%s %s crashed", request.method, request.url.path)
+            raise
+        if request.url.path not in ("/health", "/"):
+            logger.info(
+                "%s %s -> %d (%.0f ms)",
+                request.method,
+                request.url.path,
+                response.status_code,
+                (time.perf_counter() - started) * 1000,
+            )
+        return response
+
+    @app.get("/health/db")
+    async def database_health() -> dict:
+        """Whether the bill database is reachable, and why not."""
+        if bill_store is None:
+            return {"database": "not configured", "detail": "MONGODB_URI is missing or invalid."}
+        try:
+            await bill_store.ping()
+        except Exception as error:
+            logger.error("Database check failed: %s", error)
+            hint = (
+                "MongoDB Atlas is refusing this server. In Atlas > Network Access, allow 0.0.0.0/0."
+                if "SSL" in str(error) or "TLS" in str(error)
+                else "Check MONGODB_URI, the database password, and Atlas > Network Access."
+            )
+            return {"database": "unreachable", "hint": hint, "detail": str(error)[:300]}
+        return {"database": "ok"}
 
     @app.get("/", include_in_schema=False)
     async def home() -> RedirectResponse:
