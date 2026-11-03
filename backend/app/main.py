@@ -5,6 +5,7 @@ import logging
 import os
 from collections import OrderedDict
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
@@ -18,6 +19,7 @@ from google import genai
 from google.genai import errors, types
 from pydantic import BaseModel, Field, StringConstraints
 
+from app.billing import MIN_PASSWORD_LENGTH, LoginGuard, bill_store_from_env, create_billing_router
 from app.bot import (
     IMAGES_DIR,
     build_system_prompt,
@@ -51,8 +53,20 @@ def _event(payload: dict) -> str:
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
 
-def create_app(client=None) -> FastAPI:
-    app = FastAPI(title="Shuvam's Veg Restaurant Bot")
+def create_app(client=None, bill_store=None, staff_password=None) -> FastAPI:
+    bill_store = bill_store or bill_store_from_env()
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        if bill_store is not None:
+            try:
+                await bill_store.setup()
+            except Exception:
+                # Bills fail with a clear error later; the menu and chat still work.
+                logger.exception("Could not reach MongoDB. Check MONGODB_URI and Atlas network access.")
+        yield
+
+    app = FastAPI(title="Shuvam's Veg Restaurant Bot", lifespan=lifespan)
     # Lets the Flutter web app call the API during local development. For a
     # hosted web app, list its origins in CORS_ORIGINS (comma-separated).
     # Phone apps don't need this: CORS only applies in browsers.
@@ -62,7 +76,7 @@ def create_app(client=None) -> FastAPI:
         allow_origins=extra_origins,
         allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
         allow_methods=["POST", "GET"],
-        allow_headers=["Content-Type"],
+        allow_headers=["Content-Type", "X-Staff-Password"],
     )
 
     menu = load_menu()
@@ -146,6 +160,17 @@ def create_app(client=None) -> FastAPI:
     @app.post("/chat")
     async def chat(request: ChatRequest) -> StreamingResponse:
         return StreamingResponse(run_chat(request), media_type="text/event-stream")
+
+    password = staff_password or os.getenv("STAFF_PASSWORD")
+    if not password:
+        logger.error("STAFF_PASSWORD is not set, so billing is off. Add it to backend/.env.")
+    elif len(password) < MIN_PASSWORD_LENGTH:
+        # The API is public, so a short password could be guessed.
+        logger.error(
+            "STAFF_PASSWORD is shorter than %d characters, so billing is off.", MIN_PASSWORD_LENGTH
+        )
+        password = None
+    app.include_router(create_billing_router(menu, bill_store, LoginGuard(password)))
 
     return app
 

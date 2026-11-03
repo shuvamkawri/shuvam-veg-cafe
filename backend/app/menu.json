@@ -2,53 +2,54 @@
   "sample": true,
   "restaurant": "Shuvam's Veg Restaurant",
   "currency": "INR",
+  "billing": {"gst_rate": 5, "address": "Add your restaurant address here", "phone": "", "gstin": ""},
   "categories": [
     {
       "name": "Starters",
       "dishes": [
-        {"name": "Paneer Tikka", "price": 260, "spice": "medium", "popular": true, "description": "Paneer cubes marinated in spiced yogurt and grilled in a tandoor with capsicum and onion.", "ingredients": ["paneer", "yogurt", "capsicum", "onion", "gram flour", "spices"], "allergens": ["milk"]},
-        {"name": "Veg Manchurian", "price": 210, "spice": "medium", "description": "Fried mixed-vegetable balls tossed in a soy, garlic and chilli sauce.", "ingredients": ["cabbage", "carrot", "refined flour", "corn flour", "soy sauce", "garlic"], "allergens": ["wheat", "soy"]},
-        {"name": "Hara Bhara Kebab", "price": 220, "spice": "mild", "description": "Pan-fried patties of spinach, green peas and potato.", "ingredients": ["spinach", "green peas", "potato", "cashew", "spices"], "allergens": ["cashew"]}
+        {"name": "Paneer Tikka", "price": 260, "no_onion_garlic": true, "spice": "medium", "popular": true, "description": "Paneer cubes marinated in spiced yogurt and grilled in a tandoor with capsicum and onion.", "ingredients": ["paneer", "yogurt", "capsicum", "onion", "gram flour", "spices"], "allergens": ["milk"]},
+        {"name": "Veg Manchurian", "price": 210, "no_onion_garlic": false, "spice": "medium", "description": "Fried mixed-vegetable balls tossed in a soy, garlic and chilli sauce.", "ingredients": ["cabbage", "carrot", "refined flour", "corn flour", "soy sauce", "garlic"], "allergens": ["wheat", "soy"]},
+        {"name": "Hara Bhara Kebab", "price": 220, "no_onion_garlic": true, "spice": "mild", "description": "Pan-fried patties of spinach, green peas and potato.", "ingredients": ["spinach", "green peas", "potato", "cashew", "spices"], "allergens": ["cashew"]}
       ]
     },
     {
       "name": "Main Course",
       "dishes": [
-        {"name": "Paneer Butter Masala", "price": 310, "spice": "mild", "popular": true, "description": "Paneer in a rich tomato and butter gravy finished with cream.", "ingredients": ["paneer", "tomato", "butter", "cream", "cashew", "spices"], "allergens": ["milk", "cashew"]},
-        {"name": "Dal Makhani", "price": 260, "spice": "mild", "popular": true, "description": "Black lentils and kidney beans slow-cooked with butter and cream.", "ingredients": ["black lentils", "kidney beans", "butter", "cream", "tomato", "spices"], "allergens": ["milk"]},
-        {"name": "Chana Masala", "price": 230, "spice": "medium", "description": "Chickpeas simmered in a tangy onion and tomato gravy.", "ingredients": ["chickpeas", "onion", "tomato", "spices"], "allergens": []},
-        {"name": "Malai Kofta", "price": 320, "spice": "mild", "description": "Paneer and potato dumplings in a creamy cashew gravy.", "ingredients": ["paneer", "potato", "cream", "cashew", "tomato", "spices"], "allergens": ["milk", "cashew"]}
+        {"name": "Paneer Butter Masala", "price": 310, "no_onion_garlic": true, "spice": "mild", "popular": true, "description": "Paneer in a rich tomato and butter gravy finished with cream.", "ingredients": ["paneer", "tomato", "butter", "cream", "cashew", "spices"], "allergens": ["milk", "cashew"]},
+        {"name": "Dal Makhani", "price": 260, "no_onion_garlic": true, "spice": "mild", "popular": true, "description": "Black lentils and kidney beans slow-cooked with butter and cream.", "ingredients": ["black lentils", "kidney beans", "butter", "cream", "tomato", "spices"], "allergens": ["milk"]},
+        {"name": "Chana Masala", "price": 230, "no_onion_garlic": true, "spice": "medium", "description": "Chickpeas simmered in a tangy onion and tomato gravy.", "ingredients": ["chickpeas", "onion", "tomato", "spices"], "allergens": []},
+        {"name": "Malai Kofta", "price": 320, "no_onion_garlic": true, "spice": "mild", "description": "Paneer and potato dumplings in a creamy cashew gravy.", "ingredients": ["paneer", "potato", "cream", "cashew", "tomato", "spices"], "allergens": ["milk", "cashew"]}
       ]
     },
     {
       "name": "South Indian",
       "dishes": [
-        {"name": "Masala Dosa", "price": 170, "spice": "medium", "popular": true, "description": "Crisp rice and lentil crepe filled with spiced potato, served with sambar and chutney.", "ingredients": ["rice", "urad dal", "potato", "onion", "mustard seeds", "coconut"], "allergens": ["coconut"]},
-        {"name": "Idli Sambar", "price": 120, "spice": "mild", "description": "Steamed rice cakes served with lentil sambar and coconut chutney.", "ingredients": ["rice", "urad dal", "toor dal", "vegetables", "coconut"], "allergens": ["coconut"]}
+        {"name": "Masala Dosa", "price": 170, "no_onion_garlic": true, "spice": "medium", "popular": true, "description": "Crisp rice and lentil crepe filled with spiced potato, served with sambar and chutney.", "ingredients": ["rice", "urad dal", "potato", "onion", "mustard seeds", "coconut"], "allergens": ["coconut"]},
+        {"name": "Idli Sambar", "price": 120, "no_onion_garlic": true, "spice": "mild", "description": "Steamed rice cakes served with lentil sambar and coconut chutney.", "ingredients": ["rice", "urad dal", "toor dal", "vegetables", "coconut"], "allergens": ["coconut"]}
       ]
     },
     {
       "name": "Street Food",
       "dishes": [
-        {"name": "Pav Bhaji", "price": 180, "spice": "medium", "popular": true, "description": "Buttery mashed vegetable curry served with toasted bread rolls.", "ingredients": ["potato", "peas", "tomato", "capsicum", "butter", "bread rolls"], "allergens": ["milk", "wheat"]},
-        {"name": "Veg Hakka Noodles", "price": 200, "spice": "medium", "description": "Wok-tossed noodles with crunchy vegetables and soy sauce.", "ingredients": ["wheat noodles", "cabbage", "carrot", "capsicum", "soy sauce"], "allergens": ["wheat", "soy"]}
+        {"name": "Pav Bhaji", "price": 180, "no_onion_garlic": true, "spice": "medium", "popular": true, "description": "Buttery mashed vegetable curry served with toasted bread rolls.", "ingredients": ["potato", "peas", "tomato", "capsicum", "butter", "bread rolls"], "allergens": ["milk", "wheat"]},
+        {"name": "Veg Hakka Noodles", "price": 200, "no_onion_garlic": false, "spice": "medium", "description": "Wok-tossed noodles with crunchy vegetables and soy sauce.", "ingredients": ["wheat noodles", "cabbage", "carrot", "capsicum", "soy sauce"], "allergens": ["wheat", "soy"]}
       ]
     },
     {
       "name": "Rice and Breads",
       "dishes": [
-        {"name": "Veg Biryani", "price": 280, "spice": "medium", "popular": true, "description": "Basmati rice layered with mixed vegetables, saffron and whole spices.", "ingredients": ["basmati rice", "mixed vegetables", "yogurt", "saffron", "spices"], "allergens": ["milk"]},
-        {"name": "Jeera Rice", "price": 160, "spice": "none", "description": "Basmati rice tempered with cumin.", "ingredients": ["basmati rice", "cumin", "ghee"], "allergens": ["milk"]},
-        {"name": "Butter Naan", "price": 60, "spice": "none", "description": "Soft tandoor-baked bread brushed with butter.", "ingredients": ["refined flour", "yogurt", "butter"], "allergens": ["wheat", "milk"]},
-        {"name": "Tandoori Roti", "price": 35, "spice": "none", "description": "Whole wheat bread baked in a tandoor.", "ingredients": ["whole wheat flour"], "allergens": ["wheat"]}
+        {"name": "Veg Biryani", "price": 280, "no_onion_garlic": true, "spice": "medium", "popular": true, "description": "Basmati rice layered with mixed vegetables, saffron and whole spices.", "ingredients": ["basmati rice", "mixed vegetables", "yogurt", "saffron", "spices"], "allergens": ["milk"]},
+        {"name": "Jeera Rice", "price": 160, "no_onion_garlic": true, "spice": "none", "description": "Basmati rice tempered with cumin.", "ingredients": ["basmati rice", "cumin", "ghee"], "allergens": ["milk"]},
+        {"name": "Butter Naan", "price": 60, "no_onion_garlic": true, "spice": "none", "description": "Soft tandoor-baked bread brushed with butter.", "ingredients": ["refined flour", "yogurt", "butter"], "allergens": ["wheat", "milk"]},
+        {"name": "Tandoori Roti", "price": 35, "no_onion_garlic": true, "spice": "none", "description": "Whole wheat bread baked in a tandoor.", "ingredients": ["whole wheat flour"], "allergens": ["wheat"]}
       ]
     },
     {
       "name": "Desserts and Drinks",
       "dishes": [
-        {"name": "Gulab Jamun", "price": 110, "spice": "none", "description": "Two warm milk-solid dumplings soaked in rose and cardamom syrup.", "ingredients": ["milk solids", "refined flour", "sugar", "cardamom"], "allergens": ["milk", "wheat"]},
-        {"name": "Rasmalai", "price": 140, "spice": "none", "description": "Soft paneer discs in chilled saffron milk.", "ingredients": ["paneer", "milk", "saffron", "pistachio"], "allergens": ["milk", "pistachio"]},
-        {"name": "Sweet Lassi", "price": 90, "spice": "none", "description": "Chilled churned yogurt drink.", "ingredients": ["yogurt", "sugar", "cardamom"], "allergens": ["milk"]}
+        {"name": "Gulab Jamun", "price": 110, "no_onion_garlic": true, "spice": "none", "description": "Two warm milk-solid dumplings soaked in rose and cardamom syrup.", "ingredients": ["milk solids", "refined flour", "sugar", "cardamom"], "allergens": ["milk", "wheat"]},
+        {"name": "Rasmalai", "price": 140, "no_onion_garlic": true, "spice": "none", "description": "Soft paneer discs in chilled saffron milk.", "ingredients": ["paneer", "milk", "saffron", "pistachio"], "allergens": ["milk", "pistachio"]},
+        {"name": "Sweet Lassi", "price": 90, "no_onion_garlic": true, "spice": "none", "description": "Chilled churned yogurt drink.", "ingredients": ["yogurt", "sugar", "cardamom"], "allergens": ["milk"]}
       ]
     }
   ]

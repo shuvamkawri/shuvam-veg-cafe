@@ -38,6 +38,8 @@ A mobile and web app for Shuvam's Veg Restaurant, made of two programs:
 - A details page for each dish, showing price, ingredients, spice level and allergens.
 - A small AI button on every page that opens the Shuvam AI chat.
 - Recommendations shown as a list of dish cards with image and price, instead of paragraphs.
+- A "No onion & garlic" filter and badge for dishes the kitchen can make that way (Jain-friendly).
+- Staff-only billing behind a password: GST (CGST + SGST), discounts, PDF bills to share or print, daily sales, and bill cancellation. Bills are saved in MongoDB. See the Billing section of [README.md](README.md).
 
 **Current status:** the menu in `backend/app/menu.json` is **sample data**. The dishes, prices and allergens are invented and must be replaced before customers use the app.
 
@@ -553,4 +555,4 @@ flutter build apk --release --dart-define=API_URL=https://your-backend-address
 | Restaurant details | The app has no address, phone number or opening hours, and the bot says to ask staff. | Add the real details to the app and the bot's data. |
 | Debug signing | Release APKs use the debug key, which is fine for direct sharing but not the Play Store. | Create a signing key. |
 | iPhone | No iOS project was created. An APK only works on Android. | Run `flutter create --platforms=ios .` in `mobile_app/` and build on a Mac, or host the web version. |
-| Web version | The backend only allows the web app from `localhost`. | Add your site to `allow_origin_regex` in `backend/app/main.py`. |
+| Web version | The backend only allows the web app from `localhost`. | Add your site to the `CORS_ORIGINS` setting (comma-separated). |

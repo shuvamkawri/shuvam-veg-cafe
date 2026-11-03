@@ -6,7 +6,9 @@ services:
     plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # --proxy-headers: see each caller's address behind Render's proxy, so one
+    # person's wrong passwords don't lock out everyone.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips=*
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
@@ -15,3 +17,9 @@ services:
         sync: false # Render asks for this when you create the service
       - key: GEMINI_MODEL
         value: gemini-3.5-flash
+      - key: MONGODB_URI
+        sync: false # MongoDB Atlas connection string, for bills
+      - key: MONGODB_DB
+        value: shuvam_veg_cafe
+      - key: STAFF_PASSWORD
+        sync: false # password staff type in the app to open Billing (10+ characters)
