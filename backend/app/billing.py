@@ -355,8 +355,15 @@ def create_billing_router(menu: dict, store: BillStore | None, guard: LoginGuard
 
 
 def bill_store_from_env() -> BillStore | None:
-    uri = os.getenv("MONGODB_URI")
+    # Pasting into a hosting dashboard often adds spaces or quotes around the value.
+    uri = (os.getenv("MONGODB_URI") or "").strip().strip("'\"").strip()
     if not uri:
         logger.error("MONGODB_URI is not set, so billing is off. Add it to backend/.env.")
         return None
-    return MongoBillStore(uri, os.getenv("MONGODB_DB") or "shuvam_veg_cafe")
+    db_name = (os.getenv("MONGODB_DB") or "").strip().strip("'\"").strip() or "shuvam_veg_cafe"
+    try:
+        return MongoBillStore(uri, db_name)
+    except Exception as error:
+        # A bad URI must not take down the menu and chat with it.
+        logger.error("MONGODB_URI is invalid, so billing is off: %s", error)
+        return None

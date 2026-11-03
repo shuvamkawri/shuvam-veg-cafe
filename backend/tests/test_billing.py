@@ -179,3 +179,17 @@ def test_list_and_cancel(api):
     assert api.get(f"/bills/{kept['number']}", headers=STAFF).json()["total"] == 725
     assert api.get("/bills/SV-0000-99999", headers=STAFF).status_code == 404
     assert api.get("/bills?date=2001-01-01", headers=STAFF).json()["bills"] == []
+
+
+def test_bad_mongodb_uri_turns_off_billing_but_not_the_app(monkeypatch):
+    monkeypatch.setenv("MONGODB_URI", "https://cluster0.example.mongodb.net/")
+    api = TestClient(create_app(client=object(), staff_password=PASSWORD))
+    assert api.get("/health").status_code == 200
+    assert api.post("/staff/login", headers=STAFF).status_code == 503
+
+
+def test_quoted_mongodb_uri_is_accepted(monkeypatch):
+    from app.billing import MongoBillStore, bill_store_from_env
+
+    monkeypatch.setenv("MONGODB_URI", ' "mongodb://localhost:27017" ')
+    assert isinstance(bill_store_from_env(), MongoBillStore)
