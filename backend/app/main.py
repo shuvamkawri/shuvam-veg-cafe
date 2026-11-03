@@ -13,10 +13,11 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from google import genai
 from google.genai import errors, types
+from pymongo.errors import PyMongoError
 from pydantic import BaseModel, Field, StringConstraints
 
 from app.billing import MIN_PASSWORD_LENGTH, LoginGuard, bill_store_from_env, create_billing_router
@@ -144,6 +145,18 @@ def create_app(client=None, bill_store=None, staff_password=None) -> FastAPI:
             # The app must always get a message, never a dropped stream.
             logger.exception("Chat request failed")
             yield _event({"type": "error", "message": FAILED})
+
+    @app.get("/", include_in_schema=False)
+    async def home() -> RedirectResponse:
+        """Opening the server's address in a browser shows the API docs."""
+        return RedirectResponse("/docs")
+
+    @app.exception_handler(PyMongoError)
+    async def database_down(_, error: PyMongoError) -> JSONResponse:
+        logger.error("MongoDB error: %s", error)
+        return JSONResponse(
+            {"detail": "Can't reach the bill database right now. Please try again."}, status_code=503
+        )
 
     @app.get("/health")
     async def health() -> dict:

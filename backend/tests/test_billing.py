@@ -193,3 +193,22 @@ def test_quoted_mongodb_uri_is_accepted(monkeypatch):
 
     monkeypatch.setenv("MONGODB_URI", ' "mongodb://localhost:27017" ')
     assert isinstance(bill_store_from_env(), MongoBillStore)
+
+
+def test_home_opens_the_api_docs(api):
+    response = api.get("/", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/docs"
+
+
+def test_database_errors_get_a_clear_message():
+    from pymongo.errors import ServerSelectionTimeoutError
+
+    class DownStore(MemoryBillStore):
+        async def next_number(self, series):
+            raise ServerSelectionTimeoutError("SSL handshake failed")
+
+    api = TestClient(create_app(client=object(), bill_store=DownStore(), staff_password=PASSWORD))
+    response = new_bill(api)
+    assert response.status_code == 503
+    assert "bill database" in response.json()["detail"]
